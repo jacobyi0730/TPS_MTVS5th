@@ -33,6 +33,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = MyVar)
 	TObjectPtr<class UCameraComponent> CameraComp;
 	
+	UPROPERTY(EditAnywhere, Category = MyVar)
+	TObjectPtr<class USkeletalMeshComponent> GunComp;
+	
+	
 	// 입력에 대한 변수와 함수를 만들고싶다.
 	UPROPERTY(EditAnywhere, Category = MyVar)
 	TObjectPtr<class UInputAction> IA_TPSMove;	

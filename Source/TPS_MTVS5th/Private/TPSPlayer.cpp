@@ -28,6 +28,11 @@ ATPSPlayer::ATPSPlayer()
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(FName("CameraComp"));
 	CameraComp->SetupAttachment(CameraBoomComp);
 	
+	GunComp = CreateDefaultSubobject<USkeletalMeshComponent>(FName("GunComp"));
+	GunComp->SetupAttachment(GetMesh());
+	GunComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
+	
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> tempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple'"));
 	
 	if (tempMesh.Succeeded())
@@ -106,19 +111,19 @@ void ATPSPlayer::OnMyLook(const FInputActionValue& value)
 	AddControllerPitchInput(v.Y);
 }
 
-void ATPSPlayer::OnMyJump(const struct FInputActionValue& value)
+void ATPSPlayer::OnMyJump(const FInputActionValue& value)
 {
 	Jump();
 }
 
-void ATPSPlayer::OnMyFire(const struct FInputActionValue& value)
+void ATPSPlayer::OnMyFire(const FInputActionValue& value)
 {
 	MakeBullet();
 }
 
 void ATPSPlayer::MakeBullet()
 {
-	FVector point = GetActorLocation() + GetActorForwardVector() * 100;
-	GetWorld()->SpawnActor<ABullet>(BulletFactory, point, GetActorRotation());
+	FTransform t = GunComp->GetSocketTransform(TEXT("FirePoint"));
+	GetWorld()->SpawnActor<ABullet>(BulletFactory, t);
 }
 
