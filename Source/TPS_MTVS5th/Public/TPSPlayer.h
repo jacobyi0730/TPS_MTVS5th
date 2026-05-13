@@ -76,5 +76,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = MyVar)
 	TSubclassOf<class ABullet> BulletFactory;
 	
+	UPROPERTY(EditAnywhere, Category = MyVar)
+	TObjectPtr<UClass> BulletImpactFactory;
+	
 	
 };

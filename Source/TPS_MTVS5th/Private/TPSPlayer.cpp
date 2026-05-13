@@ -11,6 +11,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 // Sets default values
@@ -165,10 +166,12 @@ void ATPSPlayer::SharpShoot()
 {
 	// 카메라 위치에서 카메라 앞방향으로 선을 쏴서 부딪힌 것이 있다면 타격을 하고 싶다.
 	FHitResult OutHit;
-	FVector Start = GunComp->GetComponentLocation();
-	FVector End = Start + GunComp->GetForwardVector() * 100000.f;
+	FVector Start = CameraComp->GetComponentLocation();
+	FVector End = Start + CameraComp->GetForwardVector() * 100000.f;
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
 	
-	bool bHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Visibility);
+	bool bHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Visibility, Params);
 	
 	// 충돌한 물체가 있다면
 	if (bHit)
@@ -177,10 +180,19 @@ void ATPSPlayer::SharpShoot()
 		auto* hitComp = OutHit.GetComponent();
 		if (hitComp && hitComp->IsSimulatingPhysics())
 		{
-			// 그 물에게 힘을 가하고 싶다.
+			// 그 물체에게 힘을 가하고 싶다.
 			FVector dir = OutHit.ImpactPoint - Start;
-			FVector force = hitComp->GetMass() * dir.GetSafeNormal() * 1000.f;
+			FVector force = hitComp->GetMass() * dir.GetSafeNormal() * 5000.f;
 			hitComp->AddImpulse(force);
+		}
+		else
+		{
+			// 총알자국을 표시하고싶다.
+			FVector normalVector = OutHit.ImpactNormal;
+			FVector dir = OutHit.ImpactPoint - Start;
+			FRotator rot = UKismetMathLibrary::MakeRotFromZX(normalVector, dir.GetSafeNormal());
+			
+			GetWorld()->SpawnActor<AActor>(BulletImpactFactory, OutHit.ImpactPoint, rot);
 		}
 	}
 }
