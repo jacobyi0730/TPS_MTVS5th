@@ -32,6 +32,9 @@ ATPSPlayer::ATPSPlayer()
 	GunComp->SetupAttachment(GetMesh());
 	GunComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
+	SniperComp = CreateDefaultSubobject<UStaticMeshComponent>(FName("SniperComp"));
+	SniperComp->SetupAttachment(GetMesh());
+	SniperComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> tempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple'"));
 	
@@ -92,6 +95,11 @@ void ATPSPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 		input->BindAction(IA_TPSJump, ETriggerEvent::Started, this, &ATPSPlayer::OnMyJump);
 		
 		input->BindAction(IA_TPSFire, ETriggerEvent::Started, this, &ATPSPlayer::OnMyFire);
+
+		input->BindAction(IA_TPS1Key, ETriggerEvent::Started, this, &ATPSPlayer::OnMyChooseGun);
+
+		input->BindAction(IA_TPS2Key, ETriggerEvent::Started, this, &ATPSPlayer::OnMyChooseSniper);
+
 	}
 }
 
@@ -118,12 +126,62 @@ void ATPSPlayer::OnMyJump(const FInputActionValue& value)
 
 void ATPSPlayer::OnMyFire(const FInputActionValue& value)
 {
-	MakeBullet();
+	if (bSniper)
+	{
+		// 라인을 이용해서 총을 쏘고싶다.
+		SharpShoot();
+	}
+	else
+	{
+		MakeBullet();
+	}
+}
+
+void ATPSPlayer::OnMyChooseGun(const struct FInputActionValue& value)
+{
+	bSniper = false;
+	// GunComp만 보이게하고싶다.
+	GunComp->SetVisibility(true);
+	// SniperComp는 안보이게하고싶다.
+	SniperComp->SetVisibility(false);
+}
+
+void ATPSPlayer::OnMyChooseSniper(const struct FInputActionValue& value)
+{
+	bSniper = true;
+	// SniperComp만 보이게하고싶다.
+	SniperComp->SetVisibility(true);
+	// GunComp는 안보이게하고싶다.
+	GunComp->SetVisibility(false);
 }
 
 void ATPSPlayer::MakeBullet()
 {
 	FTransform t = GunComp->GetSocketTransform(TEXT("FirePoint"));
 	GetWorld()->SpawnActor<ABullet>(BulletFactory, t);
+}
+
+void ATPSPlayer::SharpShoot()
+{
+	// 카메라 위치에서 카메라 앞방향으로 선을 쏴서 부딪힌 것이 있다면 타격을 하고 싶다.
+	FHitResult OutHit;
+	FVector Start = GunComp->GetComponentLocation();
+	FVector End = Start + GunComp->GetForwardVector() * 100000.f;
+	
+	bool bHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Visibility);
+	
+	// 충돌한 물체가 있다면
+	if (bHit)
+	{
+		// 충돌한 물체의 물리가 켜져있다면
+		auto* hitComp = OutHit.GetComponent();
+		if (hitComp && hitComp->IsSimulatingPhysics())
+		{
+			// 그 물에게 힘을 가하고 싶다.
+			FVector dir = OutHit.ImpactPoint - Start;
+			FVector force = hitComp->GetMass() * dir.GetSafeNormal() * 1000.f;
+			hitComp->AddImpulse(force);
+		}
+	}
 }
 

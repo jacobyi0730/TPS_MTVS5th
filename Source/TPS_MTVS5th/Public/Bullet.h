@@ -34,4 +34,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MyVar)
 	TObjectPtr<class UProjectileMovementComponent> MovementComp;
 
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MyVar)
+	float SelfDestroyDelay = 1.f;
+	
+	void SelfDestroy();
 };

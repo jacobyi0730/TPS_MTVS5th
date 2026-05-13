@@ -24,18 +24,41 @@ ABullet::ABullet()
 	// 충돌 설정을 하고싶다.
 	SphereComp->SetCollisionProfileName(TEXT("BlockAll"));
 	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
 }
 
 // Called when the game starts or when spawned
 void ABullet::BeginPlay()
 {
 	Super::BeginPlay();
+	// 수명을 주고 싶다.
+	//SetLifeSpan(10.f);
+	FTimerHandle handle;
+	//GetWorldTimerManager().SetTimer(handle, this, &ABullet::SelfDestroy, SelfDestroyDelay);
 	
+	// Lambda(대단히소중하다), 익명함수
+	int k = 10;
+	auto myAdd = [&](int32 a, int32 b)->int32
+	{
+		return a + b;
+	};
+	
+	int32 result = myAdd(10, 1909);
+		
+	GetWorldTimerManager().SetTimer(handle, [&]()
+	{
+		this->Destroy();
+	}, SelfDestroyDelay, false);
 }
 
 // Called every frame
 void ABullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ABullet::SelfDestroy()
+{
+	Destroy();
 }
 

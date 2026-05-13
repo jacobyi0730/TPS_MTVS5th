@@ -36,6 +36,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = MyVar)
 	TObjectPtr<class USkeletalMeshComponent> GunComp;
 	
+	UPROPERTY(EditAnywhere, Category = MyVar)
+	TObjectPtr<class UStaticMeshComponent> SniperComp;
 	
 	// 입력에 대한 변수와 함수를 만들고싶다.
 	UPROPERTY(EditAnywhere, Category = MyVar)
@@ -50,16 +52,26 @@ public:
 	UPROPERTY(EditAnywhere, Category = MyVar)
 	TObjectPtr<class UInputAction> IA_TPSFire;	
 
-	
+	UPROPERTY(EditAnywhere, Category = MyVar)
+	TObjectPtr<class UInputAction> IA_TPS1Key;	
+
+	UPROPERTY(EditAnywhere, Category = MyVar)
+	TObjectPtr<class UInputAction> IA_TPS2Key;	
+
 	UPROPERTY(EditAnywhere, Category = MyVar)
 	TObjectPtr<class UInputMappingContext> IMC_TPSPlayer;
 	
+	bool bSniper;
+
 	void OnMyMove(const struct FInputActionValue& value);
 	void OnMyLook(const struct FInputActionValue& value);
 	void OnMyJump(const struct FInputActionValue& value);
 	void OnMyFire(const struct FInputActionValue& value);
+	void OnMyChooseGun(const struct FInputActionValue& value);
+	void OnMyChooseSniper(const struct FInputActionValue& value);
 	
 	void MakeBullet();
+	void SharpShoot();
 	
 	UPROPERTY(EditAnywhere, Category = MyVar)
 	TSubclassOf<class ABullet> BulletFactory;
