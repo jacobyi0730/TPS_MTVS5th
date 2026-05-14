@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "TPS_MTVS5th/TPS_MTVS5th.h"
 #include "TPSPlayer.generated.h"
 
 UCLASS()
@@ -56,12 +57,15 @@ public:
 	TObjectPtr<class UInputAction> IA_TPS1Key;	
 
 	UPROPERTY(EditAnywhere, Category = MyVar)
-	TObjectPtr<class UInputAction> IA_TPS2Key;	
-
+	TObjectPtr<class UInputAction> IA_TPS2Key;
+	
+	UPROPERTY(EditAnywhere, Category = MyVar)
+	TObjectPtr<class UInputAction> IA_TPSZoom;
+	
 	UPROPERTY(EditAnywhere, Category = MyVar)
 	TObjectPtr<class UInputMappingContext> IMC_TPSPlayer;
 	
-	bool bSniper;
+	EWeaponType WeaponType;
 
 	void OnMyMove(const struct FInputActionValue& value);
 	void OnMyLook(const struct FInputActionValue& value);
@@ -69,6 +73,8 @@ public:
 	void OnMyFire(const struct FInputActionValue& value);
 	void OnMyChooseGun(const struct FInputActionValue& value);
 	void OnMyChooseSniper(const struct FInputActionValue& value);
+	void OnMyZoomIn(const struct FInputActionValue& value);
+	void OnMyZoomOut(const struct FInputActionValue& value);
 	
 	void MakeBullet();
 	void SharpShoot();
@@ -78,6 +84,11 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = MyVar)
 	TObjectPtr<UClass> BulletImpactFactory;
+	
+	UPROPERTY()
+	TObjectPtr<class ATPSPlayerController> PlayerCtrl;
+	
+	float ZoomTarget = 90.f;
 	
 	
 };

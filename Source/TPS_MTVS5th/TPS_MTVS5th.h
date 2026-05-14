@@ -11,3 +11,19 @@ DECLARE_LOG_CATEGORY_EXTERN(MYLOG, Log, All);
 #define PRINT_CALL_INFO() UE_LOG(MYLOG, Warning, TEXT("%s"), *CALL_INFO)
 #define PRINT_LOG(fmt, ...) \
 	UE_LOG(MYLOG, Warning, TEXT("%s %s"), *CALL_INFO, *FString::Printf(fmt, ##__VA_ARGS__))
+
+// 열거형
+UENUM(BlueprintType)
+enum class EWeaponType : uint8 
+{
+	GUN,
+	SNIPER,
+};
+
+UENUM(BlueprintType)
+enum class EZoomType : uint8 
+{
+	ZOOM_IN,
+	ZOOM_OUT,
+};
+
