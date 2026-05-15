@@ -4,6 +4,7 @@
 #include "TPSPlayer.h"
 
 #include "Bullet.h"
+#include "Enemy.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
@@ -12,6 +13,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
 
@@ -228,6 +230,19 @@ void ATPSPlayer::SharpShoot()
 			FRotator rot = UKismetMathLibrary::MakeRotFromZX(normalVector, dir.GetSafeNormal());
 			
 			GetWorld()->SpawnActor<AActor>(BulletImpactFactory, OutHit.ImpactPoint, rot);
+		}
+		
+		// 만약 충돌한 액터가 Enemy라면 Enemy에게 대미지를 전달하고싶다.
+		auto* enemy = Cast<AEnemy>(OutHit.GetActor());
+		if (enemy && enemy->IsValidLowLevel())
+		{
+			UGameplayStatics::ApplyDamage(
+				enemy,
+				1,
+				GetController(),
+				this,
+				UDamageType::StaticClass()
+				);
 		}
 	}
 }

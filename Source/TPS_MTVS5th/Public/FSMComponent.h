@@ -11,7 +11,9 @@ enum class EEnemyState : uint8
 {
 	IDLE UMETA(DisplayName = "대기"),
 	MOVE,
-	ATTACK
+	ATTACK,
+	DAMAGE,
+	DIE
 };
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -36,4 +38,24 @@ public:
 	void StateIdle();
 	void StateMove();
 	void StateAttack();
+	void StateDamage();
+	void StateDie();
+	
+	UPROPERTY()
+	TObjectPtr<class ACharacter> Target;
+	
+	UPROPERTY()
+	TObjectPtr<class AEnemy> Me;
+	
+	void OnMyTakeDamage(int32 damage);
+	
+	bool bAttack;
+	float CurTime;
+	float AttackDelayTime = 1.f;
+	float ReactDelayTime = 1.f;
+	float AttackDistance = 200.f;
+	
+	int32 CurHP;
+	int32 MaxHP = 2;
+	
 };
