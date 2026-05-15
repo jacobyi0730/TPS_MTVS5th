@@ -4,6 +4,7 @@
 #include "FSMComponent.h"
 
 #include "Enemy.h"
+#include "Components/CapsuleComponent.h"
 #include "TPS_MTVS5th/TPS_MTVS5th.h"
 
 
@@ -126,6 +127,17 @@ void UFSMComponent::StateDamage()
 
 void UFSMComponent::StateDie()
 {
+	// 시간이 흐르다가
+	CurTime += GetWorld()->GetDeltaSeconds();
+	
+	// 바닥으로 내려가고싶다.
+	Me->SetActorLocation(Me->GetActorLocation() + FVector(0, 0, -200) * GetWorld()->GetDeltaSeconds());
+	
+	// 2초가 지나면 파괴되고싶다.
+	if (CurTime > 2.f)
+	{
+		Me->Destroy();
+	}
 }
 
 void UFSMComponent::OnMyTakeDamage(int32 damage)
@@ -141,6 +153,8 @@ void UFSMComponent::OnMyTakeDamage(int32 damage)
 	if (CurHP <= 0.f)
 	{
 		State = EEnemyState::DIE;
+		// 캡슐의 충돌체를 끄고싶다.
+		Me->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 	else
 	{
