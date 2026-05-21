@@ -6,10 +6,9 @@
 #include "WeaponUI.h"
 #include "Blueprint/UserWidget.h"
 
-void ATPSPlayerController::BeginPlay()
+void ATPSPlayerController::OnPossess(APawn* InPawn)
 {
-	Super::BeginPlay();
-	
+	Super::OnPossess(InPawn);
 	// WeaponUIFactory를 이용해서 UWeaponUI 생성해서 WeaponUI에 담고 Viewport에 붙이세요.
 
 	WeaponUI = CastChecked<UWeaponUI>(CreateWidget(GetWorld(), WeaponUIFactory));
