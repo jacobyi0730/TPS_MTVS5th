@@ -4,6 +4,7 @@
 #include "TPSPlayerAnim.h"
 
 #include "TPSPlayer.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 void UTPSPlayerAnim::NativeInitializeAnimation()
 {
@@ -25,4 +26,18 @@ void UTPSPlayerAnim::NativeUpdateAnimation(float DeltaSeconds)
 	Speed = FVector::DotProduct(Player->GetActorForwardVector(), vel);
 	Direction = FVector::DotProduct(Player->GetActorRightVector(), vel);
 	
+	// 떨어지는 중인지 아닌지 계속 모니터링 하고싶다.
+	bFalling = Player->GetCharacterMovement()->IsFalling();
+	
+	bCrouch = Player->GetCharacterMovement()->IsCrouching();
+}
+
+void UTPSPlayerAnim::PlayFireMontage()
+{
+	Montage_Play(FireMontage);
+}
+
+void UTPSPlayerAnim::PlayDiveRollMontage()
+{
+	Montage_Play(DiveRollMontage);
 }

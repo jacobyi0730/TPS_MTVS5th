@@ -62,6 +62,16 @@ public:
 	UPROPERTY(EditAnywhere, Category = MyVar)
 	TObjectPtr<class UInputAction> IA_TPSZoom;
 	
+
+	UPROPERTY(EditAnywhere, Category = MyVar)
+	TObjectPtr<class UInputAction> IA_TPSJog;
+
+	UPROPERTY(EditAnywhere, Category = MyVar)
+	TObjectPtr<class UInputAction> IA_TPSCrouch;
+
+	UPROPERTY(EditAnywhere, Category = MyVar)
+	TObjectPtr<class UInputAction> IA_TPSDiveRoll;
+
 	UPROPERTY(EditAnywhere, Category = MyVar)
 	TObjectPtr<class UInputMappingContext> IMC_TPSPlayer;
 	
@@ -75,6 +85,10 @@ public:
 	void OnMyChooseSniper(const struct FInputActionValue& value);
 	void OnMyZoomIn(const struct FInputActionValue& value);
 	void OnMyZoomOut(const struct FInputActionValue& value);
+	void OnMyJog(const struct FInputActionValue& value);
+	void OnMyWalk(const struct FInputActionValue& value);
+	void OnMyCrouch(const struct FInputActionValue& value);
+	void OnMyDiveRoll(const struct FInputActionValue& value);
 	
 	void MakeBullet();
 	void SharpShoot();
@@ -89,6 +103,13 @@ public:
 	TObjectPtr<class ATPSPlayerController> PlayerCtrl;
 	
 	float ZoomTarget = 90.f;
+	
+	// 총쏠때 소리를 내고싶다.
+	UPROPERTY(EditAnywhere, Category = MyVar)
+	TObjectPtr<USoundBase> FireSound;
+	
+	UPROPERTY(EditAnywhere, Category = MyVar)
+	TSubclassOf<UCameraShakeBase> FireCameraShake;
 	
 	
 };

@@ -27,4 +27,21 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MyVar")
 	float Direction;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MyVar")
+	bool bFalling;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MyVar")
+	bool bCrouch;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MyVar")
+	TObjectPtr<UAnimMontage> FireMontage;
+	
+	void PlayFireMontage();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MyVar")
+	TObjectPtr<UAnimMontage> DiveRollMontage;
+	
+	void PlayDiveRollMontage();
+
 };

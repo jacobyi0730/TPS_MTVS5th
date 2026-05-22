@@ -8,6 +8,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
+#include "TPSPlayerAnim.h"
 #include "TPSPlayerController.h"
 
 #include "Camera/CameraComponent.h"
@@ -33,11 +34,11 @@ ATPSPlayer::ATPSPlayer()
 	CameraComp->SetupAttachment(CameraBoomComp);
 	
 	GunComp = CreateDefaultSubobject<USkeletalMeshComponent>(FName("GunComp"));
-	GunComp->SetupAttachment(GetMesh());
+	GunComp->SetupAttachment(GetMesh(), FName("hand_r"));
 	GunComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
 	SniperComp = CreateDefaultSubobject<UStaticMeshComponent>(FName("SniperComp"));
-	SniperComp->SetupAttachment(GetMesh());
+	SniperComp->SetupAttachment(GetMesh(), FName("hand_r"));
 	SniperComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> tempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple'"));
@@ -77,6 +78,7 @@ void ATPSPlayer::BeginPlay()
 	}
 	
 	OnMyChooseGun(FInputActionValue());
+	
 }
 
 // Called every frame
@@ -115,7 +117,14 @@ void ATPSPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 		
 		input->BindAction(IA_TPSZoom, ETriggerEvent::Started, this, &ATPSPlayer::OnMyZoomIn);
 		input->BindAction(IA_TPSZoom, ETriggerEvent::Completed, this, &ATPSPlayer::OnMyZoomOut);
-
+		
+		
+		input->BindAction(IA_TPSJog, ETriggerEvent::Started, this, &ATPSPlayer::OnMyJog);
+		input->BindAction(IA_TPSJog, ETriggerEvent::Completed, this, &ATPSPlayer::OnMyWalk);
+		
+		input->BindAction(IA_TPSCrouch, ETriggerEvent::Started, this, &ATPSPlayer::OnMyCrouch);
+		
+		input->BindAction(IA_TPSDiveRoll, ETriggerEvent::Started, this, &ATPSPlayer::OnMyDiveRoll);
 	}
 }
 
@@ -142,6 +151,20 @@ void ATPSPlayer::OnMyJump(const FInputActionValue& value)
 
 void ATPSPlayer::OnMyFire(const FInputActionValue& value)
 {
+	// 움찔하고싶다.
+	if (auto* anim = Cast<UTPSPlayerAnim>(GetMesh()->GetAnimInstance()))
+	{
+		anim->PlayFireMontage();
+	}
+	if (FireSound)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), FireSound);
+	}
+	if (FireCameraShake)
+	{
+		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(FireCameraShake);
+	}
+	
 	if (WeaponType == EWeaponType::SNIPER)
 	{
 		// 라인을 이용해서 총을 쏘고싶다.
@@ -191,6 +214,37 @@ void ATPSPlayer::OnMyZoomOut(const struct FInputActionValue& value)
 	
 	ZoomTarget = 90.f;
 	PlayerCtrl->SetWeaponImage(WeaponType,  EZoomType::ZOOM_OUT);
+}
+
+void ATPSPlayer::OnMyJog(const struct FInputActionValue& value)
+{
+	GetCharacterMovement()->MaxWalkSpeed = 900.f;
+}
+
+void ATPSPlayer::OnMyWalk(const struct FInputActionValue& value)
+{
+	GetCharacterMovement()->MaxWalkSpeed = 600.f;
+}
+
+void ATPSPlayer::OnMyCrouch(const struct FInputActionValue& value)
+{
+	if (IsCrouched())
+	{
+		UnCrouch();
+	}
+	else
+	{
+		Crouch();
+	}
+}
+
+void ATPSPlayer::OnMyDiveRoll(const struct FInputActionValue& value)
+{
+	if (auto* anim = Cast<UTPSPlayerAnim>(GetMesh()->GetAnimInstance()))
+	{
+		anim->PlayDiveRollMontage();
+	}
+
 }
 
 void ATPSPlayer::MakeBullet()
