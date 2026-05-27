@@ -42,6 +42,7 @@ public:
 	
 	void OnMyTakeDamage(int32 damage);
 	
+	bool bDie;
 	bool bAttack;
 	float CurTime;
 	float AttackDelayTime = 1.f;

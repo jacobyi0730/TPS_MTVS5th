@@ -128,6 +128,11 @@ void UFSMComponent::StateDamage()
 
 void UFSMComponent::StateDie()
 {
+	if (!bDie)
+	{
+		return;
+	}
+	
 	// 시간이 흐르다가
 	CurTime += GetWorld()->GetDeltaSeconds();
 	

@@ -59,6 +59,11 @@ void UEnemyAnim::AnimNotify_DamageEnd()
 
 void UEnemyAnim::AnimNotify_DieEnd()
 {
+	// 이제 바닥으로 내려가도된다고하고싶다.
+	if (auto fsm = GetFSMComp())
+	{
+		fsm->bDie = true;
+	}
 }
 
 void UEnemyAnim::PlayDamageMontage(int32 idx)
