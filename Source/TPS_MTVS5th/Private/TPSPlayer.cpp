@@ -77,7 +77,7 @@ void ATPSPlayer::BeginPlay()
 		PlayerCtrl->PlayerCameraManager->ViewPitchMax = 45.f;
 	}
 	
-	OnMyChooseGun(FInputActionValue());
+	OnMyChooseSniper(FInputActionValue());
 	
 }
 

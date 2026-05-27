@@ -4,6 +4,7 @@
 #include "Enemy.h"
 
 #include "FSMComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -12,6 +13,9 @@ AEnemy::AEnemy()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	FSMComp = CreateDefaultSubobject<UFSMComponent>("FSMComp");
+	
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
 // Called when the game starts or when spawned

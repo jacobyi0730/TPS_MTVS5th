@@ -27,3 +27,12 @@ enum class EZoomType : uint8
 	ZOOM_OUT,
 };
 
+UENUM(BlueprintType)
+enum class EEnemyState : uint8
+{
+	IDLE UMETA(DisplayName = "대기"),
+	MOVE,
+	ATTACK,
+	DAMAGE,
+	DIE
+};

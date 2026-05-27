@@ -4,6 +4,7 @@
 #include "FSMComponent.h"
 
 #include "Enemy.h"
+#include "EnemyAnim.h"
 #include "Components/CapsuleComponent.h"
 #include "TPS_MTVS5th/TPS_MTVS5th.h"
 
@@ -93,36 +94,36 @@ void UFSMComponent::StateAttack()
 
 		// 공격!
 		PRINT_LOG(TEXT("Attack!!!!!"));
-		// sub공격대기 상태로 전이하고싶다.
-		bAttack = false;
+		
 	}
-	else
-	{
-		// 시간이 흐르다가
-		CurTime += GetWorld()->GetDeltaSeconds();
-		// 만약 현재시간이 sub공격대기시간을 초과하면
-		if (CurTime > AttackDelayTime)
-		{
-			// 현재시간을 0으로 초기화하고
-			CurTime = 0;
-			// sub공격상태로 전이하고싶다.
-			bAttack = true;
-		}
-	}
-	
 }
+
+void UFSMComponent::OnMyAttackEnd()
+{
+	// 현재시간을 0으로 초기화하고
+	CurTime = 0;
+	// sub공격상태로 전이하고싶다.
+	bAttack = true;
+}
+
+void UFSMComponent::SetState(EEnemyState newState)
+{
+	CurTime = 0;
+	State = newState;
+}
+
 
 void UFSMComponent::StateDamage()
 {
-	// 시간이 흐르다가 
-	CurTime += GetWorld()->GetDeltaSeconds();
-	// 현재시간이 리액션시간(ReactDelayTime)을 초과하면
-	if (CurTime > ReactDelayTime)
-	{
-		CurTime = 0;
-		// 이동상태로 전이하고싶다.
-		State = EEnemyState::MOVE;
-	}
+	// // 시간이 흐르다가 
+	// CurTime += GetWorld()->GetDeltaSeconds();
+	// // 현재시간이 리액션시간(ReactDelayTime)을 초과하면
+	// if (CurTime > ReactDelayTime)
+	// {
+	// 	CurTime = 0;
+	// 	// 이동상태로 전이하고싶다.
+	// 	State = EEnemyState::MOVE;
+	// }
 }
 
 void UFSMComponent::StateDie()
@@ -155,10 +156,21 @@ void UFSMComponent::OnMyTakeDamage(int32 damage)
 		State = EEnemyState::DIE;
 		// 캡슐의 충돌체를 끄고싶다.
 		Me->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+		auto* anim = Cast<UEnemyAnim>(Me->GetMesh()->GetAnimInstance());
+		anim->PlayDieMontage();
 	}
 	else
 	{
 		State = EEnemyState::DAMAGE;
+		// 나의 오너가 가지고있는 Mesh를 알고싶고,
+		// 그 Mesh에게 AnimInstace를 가져와서
+		// AnimInstance를 EnemyAnim으로 캐스팅 하고싶다.
+		auto* anim = Cast<UEnemyAnim>(Me->GetMesh()->GetAnimInstance());
+		
+		int32 randValue = FMath::RandRange(0, 1);
+		anim->PlayDamageMontage(randValue);
 	}
 }
+
 
