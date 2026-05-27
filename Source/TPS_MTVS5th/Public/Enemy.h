@@ -32,4 +32,7 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class UFSMComponent> FSMComp;
 	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class UWidgetComponent> HPComp;
+	
 };

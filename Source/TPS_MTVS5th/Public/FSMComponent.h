@@ -55,5 +55,8 @@ public:
 	void OnMyAttackEnd();
 	
 	void SetState(EEnemyState newState);
+	
+	UPROPERTY()
+	TObjectPtr<class UEnemyHPUI> HpUI;
 
 };

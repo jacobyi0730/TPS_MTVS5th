@@ -5,7 +5,9 @@
 
 #include "Enemy.h"
 #include "EnemyAnim.h"
+#include "EnemyHPUI.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
 #include "TPS_MTVS5th/TPS_MTVS5th.h"
 
 
@@ -27,7 +29,14 @@ void UFSMComponent::BeginPlay()
 
 	Me = Cast<AEnemy>(GetOwner());
 	
+	
+	HpUI = Cast<UEnemyHPUI>(Me->HPComp->GetWidget());
+	
 	CurHP = MaxHP;
+	if (HpUI)
+	{
+		HpUI->UpdateHPBar(1.f, 1.f);
+	}
 	
 }
 
@@ -155,6 +164,10 @@ void UFSMComponent::OnMyTakeDamage(int32 damage)
 	}
 	
 	CurHP -= damage;
+	if (HpUI)
+	{
+		HpUI->UpdateHPBar(static_cast<float>(CurHP), static_cast<float>(MaxHP));
+	}
 	CurTime = 0;
 	if (CurHP <= 0.f)
 	{
