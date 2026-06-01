@@ -58,5 +58,15 @@ public:
 	
 	UPROPERTY()
 	TObjectPtr<class UEnemyHPUI> HpUI;
+	
+	
+	// 이동처리를 위해 AIController를 캐싱하고싶다.
+	UPROPERTY()
+	TObjectPtr<class AAIController> AI;
+	
+	FVector RandomTargetPoint;
+	
+	bool SetRandomTargetPoint(FVector& outTargetPoint);
+
 
 };

@@ -3,12 +3,16 @@
 
 #include "FSMComponent.h"
 
+#include "TPS_MTVS5th/TPS_MTVS5th.h"
 #include "Enemy.h"
 #include "EnemyAnim.h"
 #include "EnemyHPUI.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
-#include "TPS_MTVS5th/TPS_MTVS5th.h"
+#include "AIController.h"
+#include "NavigationSystem.h"
+#include "NavigationSystemTypes.h"
+#include "Navigation/PathFollowingComponent.h"
 
 
 // Sets default values for this component's properties
@@ -29,6 +33,7 @@ void UFSMComponent::BeginPlay()
 
 	Me = Cast<AEnemy>(GetOwner());
 	
+	AI = Cast<AAIController>(Me->GetController());
 	
 	HpUI = Cast<UEnemyHPUI>(Me->HPComp->GetWidget());
 	
@@ -75,8 +80,45 @@ void UFSMComponent::StateIdle()
 void UFSMComponent::StateMove()
 {
 	// TODO : Target을 향해 이동하고 싶다.
-	FVector dir = Target->GetActorLocation() - Me->GetActorLocation();
-	Me->AddMovementInput(dir, 1);
+	FVector destination = Target->GetActorLocation();
+	FVector dir = destination - Me->GetActorLocation();
+	//Me->AddMovementInput(dir, 1);
+	
+	// 순찰, 추적을 구현하고 싶다.
+	// 만약 Target이 길 위에 있다면 추적을 하고싶고
+	auto* ns = UNavigationSystemV1::GetNavigationSystem(GetWorld());
+	FPathFindingQuery query;
+	FAIMoveRequest req;
+	req.SetAcceptanceRadius(150.f);
+	req.SetGoalLocation(destination);
+	
+	AI->BuildPathfindingQuery(req, query);
+	
+	auto result = ns->FindPathSync(query);
+	// 만약 Target이 길 위에 있다면
+	if (result.IsSuccessful())
+	{
+		AI->MoveToLocation(destination);
+	}
+	// 그렇지않다면 순찰을 하고싶다. 
+	else
+	{
+		//	순찰을 하기위해 길위의 랜덤한 위치를 정해서 그곳으로 이동하고싶다.
+		auto res = AI->MoveToLocation(RandomTargetPoint);
+		// 만약 이미도착했거나 실패했다면
+		if (res != EPathFollowingRequestResult::Type::RequestSuccessful)
+		{
+			// 다시 목적지를 만들어주고싶다.
+			SetRandomTargetPoint(RandomTargetPoint);
+		}
+	}
+	
+	
+	
+
+	
+	
+	
 	
 	float distance = dir.Size();
 	// 조건 : Target과의 거리가 2미터 이내라면
@@ -119,6 +161,25 @@ void UFSMComponent::SetState(EEnemyState newState)
 {
 	CurTime = 0;
 	State = newState;
+	
+	SetRandomTargetPoint(RandomTargetPoint);
+}
+
+bool UFSMComponent::SetRandomTargetPoint(FVector& outTargetPoint)
+{
+	// 갈 수 있는 길위의 랜덤한 위치를 기억하고싶다.
+	
+	auto* ns = UNavigationSystemV1::GetNavigationSystem(GetWorld());
+	FVector origin = Me->GetActorLocation();
+	float radius = 500.f;
+	FNavLocation resultLoc;
+	if (ns->GetRandomReachablePointInRadius(origin, radius, resultLoc))
+	{
+		outTargetPoint = resultLoc.Location;
+		return true;
+	}
+	
+	return false;
 }
 
 
@@ -162,6 +223,8 @@ void UFSMComponent::OnMyTakeDamage(int32 damage)
 	{
 		return;
 	}
+	
+	AI->StopMovement();
 	
 	CurHP -= damage;
 	if (HpUI)

@@ -35,4 +35,8 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class UWidgetComponent> HPComp;
 	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class UNavigationInvokerComponent> NavInvokerComp;
+	
+	
 };
