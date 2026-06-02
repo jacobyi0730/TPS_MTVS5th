@@ -35,7 +35,7 @@ void AEnemyManager::BeginPlay()
 void AEnemyManager::MakeEnemy()
 {
 	// SpawnPoints 중에 랜덤으로 하나 정해서 t를 확정하고싶다.
-	int32 index = index = FMath::RandRange(0, SpawnPoints.Num() - 1);;
+	int32 index = index = FMath::RandRange(0, SpawnPoints.Num() - 1);
 	if (index == LatestIndex)
 	{
 		index = (index + 1) % SpawnPoints.Num();
