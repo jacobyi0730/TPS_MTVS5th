@@ -6,6 +6,31 @@
 #include "GameFramework/Character.h"
 #include "TPS_MTVS5th/TPS_MTVS5th.h"
 #include "TPSPlayer.generated.h"
+//
+// DECLARE_DELEGATE_OneParam(FTestDelegate, int32 value);
+// DECLARE_DYNAMIC_DELEGATE_OneParam(FDTestDelegate, int32, value);
+// DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDMDelegate, int32, value);
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FInputComponentDelegate, class UEnhancedInputComponent*);
+
+
+// FTestDelegate td;
+//
+//
+// void Test()
+// {
+// 	
+// 	td.BindLambda([](){});
+// 	if (td.IsBound())
+// 	{
+// 		td.Execute(0);
+// 	}
+// }
+//
+
+
+
+
 
 UCLASS()
 class TPS_MTVS5TH_API ATPSPlayer : public ACharacter
@@ -100,9 +125,20 @@ public:
 	UPROPERTY()
 	TObjectPtr<class UPlayerBaseComponent> FireComp; 
 	
+	FInputComponentDelegate InputComponetDeletage;
 	
-	
-	
-	
+	// FDTestDelegate dtd;
+	// FDMDelegate dmd;
+	// void ttt(int32 v){}
+	//
+	// void Test()
+	// {
+	// 	dmd.AddDynamic(this, &ATPSPlayer::ttt);
+	// 	dmd.Broadcast(0);
+	// 	
+	// 	dtd.BindDynamic(this, &ATPSPlayer::ttt);
+	// 	dtd.Execute(23);
+	// }
+
 	
 };

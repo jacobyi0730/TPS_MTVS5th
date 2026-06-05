@@ -67,7 +67,6 @@ ATPSPlayer::ATPSPlayer()
 void ATPSPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 // Called every frame
@@ -101,12 +100,12 @@ void ATPSPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	
-	
-	
 	if (auto* input = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		MoveComp->SetPlayerInputComp(input);
-		FireComp->SetPlayerInputComp(input);
+		if (InputComponetDeletage.IsBound())
+		{
+			InputComponetDeletage.Broadcast(input);
+		}
 	}
 }
 

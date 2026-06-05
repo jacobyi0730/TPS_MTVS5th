@@ -22,6 +22,8 @@ void UPlayerBaseComponent::InitializeComponent()
 	Super::InitializeComponent();
 
 	Me = Cast<ATPSPlayer>(GetOwner());
+	
+	Me->InputComponetDeletage.AddUObject(this, &UPlayerBaseComponent::SetPlayerInputComp);
 
 }
 
