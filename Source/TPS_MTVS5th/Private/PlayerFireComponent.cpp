@@ -6,6 +6,7 @@
 #include "Bullet.h"
 #include "Enemy.h"
 #include "EnhancedInputComponent.h"
+#include "MainUI.h"
 #include "TPSPlayer.h"
 #include "TPSPlayerAnim.h"
 #include "TPSPlayerController.h"
@@ -101,6 +102,8 @@ void UPlayerFireComponent::OnMyChooseGun(const struct FInputActionValue& value)
 	Me->SniperComp->SetVisibility(false);
 	Me->PlayerCtrl->SetWeaponImage(WeaponType, EZoomType::ZOOM_OUT);
 	ZoomTarget = 90.f;
+	
+	Me->PlayerCtrl->MainUI->SetChooseGun(true);
 }
 
 void UPlayerFireComponent::OnMyChooseSniper(const struct FInputActionValue& value)
@@ -111,6 +114,7 @@ void UPlayerFireComponent::OnMyChooseSniper(const struct FInputActionValue& valu
 	// GunComp는 안보이게하고싶다.
 	Me->GunComp->SetVisibility(false);
 	Me->PlayerCtrl->SetWeaponImage(WeaponType,  EZoomType::ZOOM_OUT);
+	Me->PlayerCtrl->MainUI->SetChooseGun(false);
 }
 
 void UPlayerFireComponent::OnMyZoomIn(const struct FInputActionValue& value)

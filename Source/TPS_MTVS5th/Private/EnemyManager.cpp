@@ -32,6 +32,12 @@ void AEnemyManager::BeginPlay()
 	}, 2, true);
 }
 
+void AEnemyManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	GetWorldTimerManager().ClearTimer(TimerHandle);
+}
+
 void AEnemyManager::MakeEnemy()
 {
 	// SpawnPoints 중에 랜덤으로 하나 정해서 t를 확정하고싶다.
