@@ -26,4 +26,12 @@ public:
 	UPROPERTY()
 	TObjectPtr<UWeaponUI> WeaponUI;
 	
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = MyVar)
+	TSubclassOf<class UMainUI> MainUIFactory;
+	
+	UPROPERTY()
+	TObjectPtr<UMainUI> MainUI;
+
+	
 };

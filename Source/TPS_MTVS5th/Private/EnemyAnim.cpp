@@ -5,6 +5,7 @@
 
 #include "Enemy.h"
 #include "FSMComponent.h"
+#include "TPSPlayer.h"
 
 void UEnemyAnim::NativeInitializeAnimation()
 {
@@ -44,6 +45,20 @@ void UEnemyAnim::AnimNotify_Hit()
 	if (auto fsm = GetFSMComp())
 	{
 		fsm->bAttack = false;
+		
+		auto* target = GetWorld()->GetFirstPlayerController()->GetCharacter();
+		// 주인공이 공격 거리에 있다면?
+		float dist = Enemy->GetDistanceTo(target);
+		if (dist < 150.f)
+		{
+			// 주인공이 enemy의 전방에 있다면?
+			// 공격!
+			if (auto* player = Cast<ATPSPlayer>(target))
+			{
+				player->DoDamage(1);
+			}
+		}
+
 	}
 }
 

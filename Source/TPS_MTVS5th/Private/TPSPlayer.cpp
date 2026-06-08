@@ -8,7 +8,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
+#include "MainUI.h"
 #include "PlayerFireComponent.h"
+#include "PlayerHP.h"
 #include "PlayerMoveComponent.h"
 #include "TPSPlayerAnim.h"
 #include "TPSPlayerController.h"
@@ -67,6 +69,14 @@ ATPSPlayer::ATPSPlayer()
 void ATPSPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	// 태어날 때 체력을 100%로 채우고 싶다.
+	CurHP = MaxHP;
+	PlayerCtrl->MainUI->PlayerHP->SetHP(CurHP, MaxHP);
+	
+	PlayerCtrl->SetShowMouseCursor(false);
+	PlayerCtrl->MainUI->SetGameOverActive(false);
+
 }
 
 // Called every frame
@@ -106,6 +116,24 @@ void ATPSPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 		{
 			InputComponetDeletage.Broadcast(input);
 		}
+	}
+}
+
+void ATPSPlayer::DoDamage(int32 damage)
+{
+	// 체력을 1 감소시키고싶다.
+	CurHP -= damage;
+	// UI에 현재 체력을 반영하고 싶다.
+	PlayerCtrl->MainUI->PlayerHP->SetHP(CurHP, MaxHP);
+	// 만약 체력이 0 이하라면 
+	// 일시정지 시키고
+	// 마우스 커서를 보이게 
+	// GameOverUI를 보이게하고싶다.
+	if (CurHP <= 0)
+	{
+		PlayerCtrl->SetPause(true);
+		PlayerCtrl->SetShowMouseCursor(true);
+		PlayerCtrl->MainUI->SetGameOverActive(true);
 	}
 }
 

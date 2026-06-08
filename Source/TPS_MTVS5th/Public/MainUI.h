@@ -1,0 +1,25 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Blueprint/UserWidget.h"
+#include "MainUI.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class TPS_MTVS5TH_API UMainUI : public UUserWidget
+{
+	GENERATED_BODY()
+	
+public:
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<class UPlayerHP> PlayerHP;
+
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<class UUserWidget> GameOver;
+	
+	void SetGameOverActive(bool bActive);
+};

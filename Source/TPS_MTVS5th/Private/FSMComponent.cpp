@@ -12,6 +12,7 @@
 #include "AIController.h"
 #include "NavigationSystem.h"
 #include "NavigationSystemTypes.h"
+#include "TPSPlayer.h"
 #include "Navigation/PathFollowingComponent.h"
 
 
@@ -143,9 +144,6 @@ void UFSMComponent::StateAttack()
 			return;	
 		}
 
-		// 공격!
-		PRINT_LOG(TEXT("Attack!!!!!"));
-		
 	}
 }
 

@@ -53,7 +53,7 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
+
 	// 카메라 컴포넌트를 붙이고싶다.
 	UPROPERTY(EditAnywhere, Category = MyVar)
 	TObjectPtr<class USpringArmComponent> CameraBoomComp;
@@ -126,6 +126,18 @@ public:
 	TObjectPtr<class UPlayerBaseComponent> FireComp; 
 	
 	FInputComponentDelegate InputComponetDeletage;
+	
+	void DoDamage(int32 damage);
+	
+	int32 CurHP;
+	int32 MaxHP = 3;
+	
+	
+	
+	
+	
+	
+	
 	
 	// FDTestDelegate dtd;
 	// FDMDelegate dmd;
