@@ -9,6 +9,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "MainUI.h"
+#include "ObjectPoolSubSystem.h"
 #include "PlayerFireComponent.h"
 #include "PlayerHP.h"
 #include "PlayerMoveComponent.h"
@@ -69,6 +70,10 @@ ATPSPlayer::ATPSPlayer()
 void ATPSPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	// 태어날 때 ObjectPool에 총알을 50개 넣고싶다.
+	auto* pool = GetWorld()->GetSubsystem<UObjectPoolSubSystem>();
+	pool->InitPool(BulletFactory, 50);
 	
 	// 태어날 때 체력을 100%로 채우고 싶다.
 	CurHP = MaxHP;

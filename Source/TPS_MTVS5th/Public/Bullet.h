@@ -38,5 +38,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MyVar)
 	float SelfDestroyDelay = 1.f;
 	
+	void ResetMovementComp();
+	
 	void SelfDestroy();
+	
+	
 };

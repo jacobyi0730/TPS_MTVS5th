@@ -3,6 +3,7 @@
 
 #include "Bullet.h"
 
+#include "ObjectPoolSubSystem.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
@@ -47,7 +48,14 @@ void ABullet::BeginPlay()
 		
 	GetWorldTimerManager().SetTimer(handle, [&]()
 	{
-		this->Destroy();
+		MovementComp->Deactivate();
+		MovementComp->SetComponentTickEnabled(false);
+		MovementComp->Velocity = FVector::ZeroVector;
+		MovementComp->UpdateComponentVelocity();
+		
+		auto* pool = GetWorld()->GetSubsystem<UObjectPoolSubSystem>();
+		pool->ReturnToPool(this);
+
 	}, SelfDestroyDelay, false);
 }
 
@@ -55,6 +63,14 @@ void ABullet::BeginPlay()
 void ABullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ABullet::ResetMovementComp()
+{
+	MovementComp->SetUpdatedComponent(RootComponent);
+	MovementComp->Velocity = GetActorForwardVector() * MovementComp->InitialSpeed;
+	MovementComp->SetComponentTickEnabled(true);
+	MovementComp->Activate(true);
 }
 
 void ABullet::SelfDestroy()

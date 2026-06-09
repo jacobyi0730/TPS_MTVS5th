@@ -7,6 +7,7 @@
 #include "Enemy.h"
 #include "EnhancedInputComponent.h"
 #include "MainUI.h"
+#include "ObjectPoolSubSystem.h"
 #include "TPSPlayer.h"
 #include "TPSPlayerAnim.h"
 #include "TPSPlayerController.h"
@@ -141,7 +142,11 @@ void UPlayerFireComponent::OnMyZoomOut(const struct FInputActionValue& value)
 void UPlayerFireComponent::MakeBullet()
 {
 	FTransform t = Me->GunComp->GetSocketTransform(TEXT("FirePoint"));
-	GetWorld()->SpawnActor<ABullet>(Me->BulletFactory, t);
+	auto* pool = GetWorld()->GetSubsystem<UObjectPoolSubSystem>();
+	auto* bullet = Cast<ABullet>(pool->SpawnFromPool(Me->BulletFactory, t));
+	
+	bullet->ResetMovementComp();
+	//GetWorld()->SpawnActor<ABullet>(Me->BulletFactory, t);
 }
 
 void UPlayerFireComponent::SharpShoot()
