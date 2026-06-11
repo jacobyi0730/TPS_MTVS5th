@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PoolInterface.h"
 #include "GameFramework/Actor.h"
 #include "Bullet.generated.h"
 
 UCLASS()
-class TPS_MTVS5TH_API ABullet : public AActor
+class TPS_MTVS5TH_API ABullet : public AActor, public IPoolInterface
 {
 	GENERATED_BODY()
 
@@ -38,9 +39,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MyVar)
 	float SelfDestroyDelay = 1.f;
 	
-	void ResetMovementComp();
+	//void ResetMovementComp();
 	
 	void SelfDestroy();
+	
+	virtual void OnSpwanFromPool_Implementation() override;
+	virtual void OnReturnToPool_Implementation() override;
+	
+	
 	
 	
 };

@@ -145,7 +145,7 @@ void UPlayerFireComponent::MakeBullet()
 	auto* pool = GetWorld()->GetSubsystem<UObjectPoolSubSystem>();
 	auto* bullet = Cast<ABullet>(pool->SpawnFromPool(Me->BulletFactory, t));
 	
-	bullet->ResetMovementComp();
+	//bullet->ResetMovementComp();
 	//GetWorld()->SpawnActor<ABullet>(Me->BulletFactory, t);
 }
 

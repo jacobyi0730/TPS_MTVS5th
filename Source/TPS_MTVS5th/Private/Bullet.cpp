@@ -48,10 +48,10 @@ void ABullet::BeginPlay()
 		
 	GetWorldTimerManager().SetTimer(handle, [&]()
 	{
-		MovementComp->Deactivate();
-		MovementComp->SetComponentTickEnabled(false);
-		MovementComp->Velocity = FVector::ZeroVector;
-		MovementComp->UpdateComponentVelocity();
+		// MovementComp->Deactivate();
+		// MovementComp->SetComponentTickEnabled(false);
+		// MovementComp->Velocity = FVector::ZeroVector;
+		// MovementComp->UpdateComponentVelocity();
 		
 		auto* pool = GetWorld()->GetSubsystem<UObjectPoolSubSystem>();
 		pool->ReturnToPool(this);
@@ -65,7 +65,20 @@ void ABullet::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ABullet::ResetMovementComp()
+// void ABullet::ResetMovementComp()
+// {
+// 	MovementComp->SetUpdatedComponent(RootComponent);
+// 	MovementComp->Velocity = GetActorForwardVector() * MovementComp->InitialSpeed;
+// 	MovementComp->SetComponentTickEnabled(true);
+// 	MovementComp->Activate(true);
+// }
+
+void ABullet::SelfDestroy()
+{
+	Destroy();
+}
+
+void ABullet::OnSpwanFromPool_Implementation()
 {
 	MovementComp->SetUpdatedComponent(RootComponent);
 	MovementComp->Velocity = GetActorForwardVector() * MovementComp->InitialSpeed;
@@ -73,8 +86,11 @@ void ABullet::ResetMovementComp()
 	MovementComp->Activate(true);
 }
 
-void ABullet::SelfDestroy()
+void ABullet::OnReturnToPool_Implementation()
 {
-	Destroy();
+	MovementComp->Deactivate();
+	MovementComp->SetComponentTickEnabled(false);
+	MovementComp->Velocity = FVector::ZeroVector;
+	MovementComp->UpdateComponentVelocity();
 }
 

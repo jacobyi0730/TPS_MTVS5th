@@ -3,6 +3,8 @@
 
 #include "ObjectPoolSubSystem.h"
 
+#include "PoolInterface.h"
+
 void UObjectPoolSubSystem::InitPool(TSubclassOf<AActor> factory, int32 initSize)
 {
 	if (nullptr == factory || 0 == initSize)
@@ -38,6 +40,11 @@ AActor* UObjectPoolSubSystem::SpawnFromPool(TSubclassOf<AActor> factory, FVector
 	// 초기화 처리
 	retActor->SetActorLocationAndRotation(location, rotation);
 	
+	if (retActor->Implements<UPoolInterface>())
+	{
+		IPoolInterface::Execute_OnSpwanFromPool(retActor);
+	}
+	
 	SetActive(retActor, true);
 	
 	return retActor;
@@ -51,15 +58,14 @@ AActor* UObjectPoolSubSystem::SpawnFromPool(TSubclassOf<AActor> factory, FTransf
 void UObjectPoolSubSystem::ReturnToPool(AActor* actor)
 {
 	if (nullptr == actor) return;
-	// 기존에 풀로 관리한것만 넣겠다?
-	//if (ObjectPools.Contains(actor->GetClass()))
-	// {
-	// 	SetActive(actor, false);
-	// 	TArray<AActor*> array = ObjectPools.Add(actor->GetClass()); 
-	// 	array.Add(actor);
-	// }
+	
+	if (actor->Implements<UPoolInterface>())
+	{
+		IPoolInterface::Execute_OnReturnToPool(actor);
+	}
 	
 	SetActive(actor, false);
+	
 	ObjectPools.FindOrAdd(actor->GetClass()).PooledActors.Add(actor);
 }
 
